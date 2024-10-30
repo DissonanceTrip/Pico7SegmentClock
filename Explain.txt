@@ -1,0 +1,155 @@
+Welcome to Explain.txt!
+This txt doc will tell you a bunch of stuff - it is not required reading.
+Most of this info is written in code comments. But if you want to read more detail, here you go!
+
+(and yes, I am aware my naming scheme is inconsistent - I only write good when I get paid lol)
+
+---- main.py ----
+*def wlan_connect()
+	This enables wireless chip and connects to the wifi network
+	This has some checks to ensure connection is successful
+	returns ip as string but this is not used by anything
+
+*def wlan_disconnect()
+	This deinits the wireless chip and disconnects from the wifi network
+	This has some checks to ensure everything is shut down fully
+	I wrote this to ensure the Pico W doesn't overdraw power from the Servo Board
+
+*def setALLZERO()
+	Sets all servos to the zero position (zero degrees & zero on the displays)
+
+*def setWlanSuccess()
+	Set the servos to a predefined position/pattern to indicate that wifi connection is good
+
+*def get_time_AIO()
+	Does a webrequest to worldtimeapi.org to get current UTC offset for your public IP's location
+	Sync time via public ntp server via ntptime\
+
+*def get_time_backup()
+	This is a backup method if the first one doesn't work for any reason
+	uses two API calls to get the same result.
+	First get current public IP via ipify.org
+	Second get UTC offset via timeapi.io
+	sync time via ntptime
+
+*def updateTimeNoFail()
+	unused method. try to sync time via ntp and reset machine if it fails
+
+*def updateTime()
+	essentially the same as updateTimeNoFail() but does not reset machine upon failure.
+	This is used to resync ntp during operation
+
+*time formatting explained
+	year, month, day, hour, mins, secs, weekday, yearday = time.localtime(time.time() + UTC_OFFSET)
+	currentHour ="{}".format(hour%12)
+	currentMinute = "{}".format(mins)
+	
+	First line sets names to the values of the Tuple that makes up the result of time.localtime()
+	(time.time() + UTC_OFFSET)
+	time.time() would return the RTC's value in that was set by ntptime.settime() previously. (in UTC)
+	adding UTC_OFFSET corrects this to match actual local time
+	
+	Second line formats hours in 12 hour format instead of 24 hour as is default
+	Third line just grabs minutes like normal
+
+*leading zeros for time display
+	I got leading zeros by checking if the length of the currentHour and currentMinute strings were 1
+	If so, statically set the leading zero
+	if not, then no leading zero is needed.
+	Here is the section that does this for the Hours:
+	
+	if len(str(currentHour)) == 1: #if hour is single digit and needs leading zero
+                hoursTens.write(0) #force the leading zero 
+                time.sleep(0.5)
+                hoursOnes.write(int(currentHour) * degrees)
+            else: #hour is two digits and does not need leading zero
+                hoursTens.write(int(currentHour[0]) * degrees)
+                time.sleep(0.5)
+                hoursOnes.write(int(currentHour[1]) * degrees)
+
+	Minutes works the same way.
+
+*make the servos not try to set value to current value (minimize unneeded "movement")
+	Added a simple check to see if the currentHour/currentMinute variables had changed. 
+	If not, then there is no need to write a new value to the servos
+	If the value HAS changed, write the value to the servos.
+	Simple if currentValue == oldValue type of check
+	
+	This was originally done as I could hear the servos make a slight wine when told to move to the position it was currently at.
+	This annoyed me - so it was mitigated.
+
+---- secrets.py ----
+
+*ssid
+	change this to be your wifi name
+*password
+	change this to be your wifi password
+
+*How do I use this?
+	open the file in Thonny, make the changes, save to the Pico W
+
+
+---- Questions and Other ----
+
+*Why bother using APIs for time checks when ntptime should do it all for you?
+	ntptime doesn't support specifying the timezone
+	statically setting timezone works fine, but daylight savings time would break everything
+	my solution to this was the API calls to grab current UTC offset on startup. 
+	Now, doesn't matter what timezone/DST is currently in use as it will automatically set everything!
+	
+*Why have a primary and backup time check?
+	get_time_AIO uses worldtimeapi.org's API as it will automatically check everything for whatever IP you are coming from
+	This is super convient as it avoids needing to send IP or location or anything else.
+	However, it likes to timeout or refuse to respond sometimes (especially if you call it faster than once every 60 seconds)
+	So, I made a backup that gets your IP with one API and sends that IP to another API to get UTC offset info 
+
+*Why not just sync the RTC directly from the info received from the time APIs?
+	Because formatting and RTC uses UTC time and not local time. Most APIs return local time.
+	worldtimeapi does return UTC time, but in a bad format. Even after adjusting format - the Pico RTC didn't like it.
+	Easier option was to get UTC offset and let ntptime.settime() work as intended.
+	
+*Why did you write this whole file? 
+	Documentation = always good even when it is bad like this file ¯\_(ツ)_/¯ 
+	
+*Why did you make this instead of just using an arduino and copying the code from Engineezy?
+	Cause using a Pico W and syncing time via the internet is objectively cooler.
+
+*But what about if you don't have wifi or something goes wrong? Wouldn't it just keep resetting?
+	Yeah - I'll add logic to tell it to give up and wait before trying again eventually
+	
+*What printer do you use?
+	Bambu Lab P1S - is pretty good
+
+*what filament did you use for your displays?
+	Elegoo Rapid PETG for all black pieces
+	Kingroon PETG for the blue accents
+
+*the blue on black color scheme is a bit hard to see.
+	Yeah - made this as a gift and these are the colors they requested.
+	I made myself a black with orange accent version - is very nice
+
+*Who are you? What do you do? Why do you only have pico stuff on github?
+	I'm Phoebe, I do assorted things, I have a lot more than Pico stuff on github but all private repos
+	if you are a fed - leave me alone I paid my taxes I promise.
+
+*So, are you ever going to finish the Pico Status Light project?
+	I'm tRyInG Ok??? ;_; 
+	but yeah, it is done, just need to write more documentation and clean up the code a bit.
+	This project got in the way of finishing the Pico Status Light as this was done as a gift and took priority.
+	I am also building a new control pannel for it that doesn't rely on wonky powershell program to control it.
+	
+*What is the Pico Status Light project?
+	You know those status light things for offices and whatnot? light green = available, red = on a call/busy
+	Yeah those things. Well, they are stupid and expensive, so I made a cool version using a Pico and a screen.
+	Way cheaper, very customizable, and mega cooler. 
+	Automatically detects if you are in a Zoom call and sets status to Busy (only Zoom for now cause that is what I use for work)
+	Working on adding a standalone control pannel that allows you to set status of the light without needing to run anything on your computer.
+	Works wirelessly so no need to have it plugged in to your computer, which means it is super easy to put outside of an office/room so you can have your door closed and still use the light!
+	Check my github repos for more info
+
+*Where can I find more of your work?
+	All the stuff I do is either for work, for friends, or for fun - as a result nearly all of it is private.
+	You can find my public github repos at https://github.com/DissonanceTrip
+	And you can find whatever music I made public for friends by searching for "Dissonance Trip" on Spotify
+	If I get around to making any more 3D models for printing, you can find me on MakerWorld too
+	https://makerworld.com/en/@DissBee
