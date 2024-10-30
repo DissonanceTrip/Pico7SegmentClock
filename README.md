@@ -62,6 +62,8 @@ Sometimes servos do not move as much as they are supposed to - higher degree val
 
 Sometimes there is issues reconnecting the wifi during operation to resync the time - if you run into this issue you can either remove those checks entirely or just ignore it. Everything should keep working. 
 
+If you lose power/internet, and power returns while internet does not, the system will continually reboot as it will fail to set the time via NTP. I will correct this with some checks later, but I have not done so yet.
+
 # Troubleshooting
 If you run into issues, I recommend tinkering with it to try to figure it out! (That's half the fun of the whole project!)
 
