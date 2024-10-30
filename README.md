@@ -10,14 +10,14 @@ Servo board (for power/easy hookup): https://www.waveshare.com/pico-servo-driver
 
 12v 5a power supply: get one from pretty much anywhere
 
-wire to connect the power supply to the waveshare board: whatever works
+wire to connect the power supply to the Waveshare board: whatever works
 
 some MG995 180degree servos: I got some off amazon - https://www.amazon.com/Control-Angle180-Digital-Torque-Helicopter/dp/B07NQJ1VZ2
 
 # Code
 The Pico W will need 2 files:
 1) main.py - this does the majority of the work
-2) secrets.py - this will hold your wifi name and password
+2) secrets.py - this will hold your WiFi name and password
 
 # Extra files
 I have included a few extra files to make this whole process easier:
@@ -34,7 +34,7 @@ Once connected to power, the Pico will sleep for 3 seconds.
 
 Next, the Pico will set all the servo positions to 0 degrees which should correspond with the number 0 on each display. 
 
-Next, the Pico will connect to the wifi network, as defined, then sleep for 2 seconds.
+Next, the Pico will connect to the WiFi network, as defined, then sleep for 2 seconds.
 
 Next, the Pico will set the servo positions to a defined number/pattern (default is 1337 because I'm funny) then sleep for 2 seconds. This indicates that wireless connection has succeeded.
 
@@ -44,10 +44,10 @@ Next, after sleeping for 1 second, the wireless chip will be disabled to conserv
 
 Next, the current actual local time will be calculated utilizing the UTC offset, time will be formatted, and the servos will be set to reflect the current time. This runs in a loop that will update the displays to match the time as it changes.
 
-Every hour of operation, the wireless chip will be re-enabled, it will connect to wifi, resync the RTC via NTP, and disable the wireless chip after it is done. This is to ensure the time is kept as accurate as possible, but it is not really neccessary.
+Every hour of operation, the wireless chip will be re-enabled, it will connect to WiFi, resync the RTC via NTP, and disable the wireless chip after it is done. This is to ensure the time is kept as accurate as possible, but it is not really necessary.
 
 # Things you can/should change (this is documented in code comments as well)
-I was pretty agressive with the sleep values between servo movements and checks - you could reduce these values without issue, but I do recommend leaving some time between movements to prevent overloading anything
+I was pretty aggressive with the sleep values between servo movements and checks - you could reduce these values without issue, but I do recommend leaving some time between movements to prevent overloading anything
 
 You can statically set the UTC_OFFSET value for your timezone if you want. I had issues with this so it gets this value via APIs instead. If you statically set it, remove the methods that would update it.
 
@@ -55,12 +55,12 @@ The degrees variable is used to move the servos a set amount. You can use the de
 
 You SHOULD to change the pin values to match where you have your servos plugged in (or just plug them in to the same pins I did)
 
-You MUST update the secrets.py file with your wifi name (ssid) and password. If you don't do this, you don't get wifi :( 
+You MUST update the secrets.py file with your WiFi name (ssid) and password. If you don't do this, you don't get WiFi :( 
 
 # Known issues as of 30/10/2024
-Sometimes servos do not move as much as they are supposed to - higher degree value usually fixes this (bump it up by 1 or 2 degrees), but it can throw off the displays as they count up. Might make changes to this to let you set a specific degree value per display/servo to fine tune it. This should be prety easy to impliment, but overall it works well enough so I haven't bothered yet.
+Sometimes servos do not move as much as they are supposed to - higher degree value usually fixes this (bump it up by 1 or 2 degrees), but it can throw off the displays as they count up. Might make changes to this to let you set a specific degree value per display/servo to fine tune it. This should be pretty easy to implement, but overall it works well enough so I haven't bothered yet.
 
-Sometimes there is issues reconnecting the wifi during operation to resync the time - if you run into this issue you can either remove those checks entirely or just ignore it. Everything should keep working. 
+Sometimes there is issues reconnecting the WiFi, during operation, to resync the time - if you run into this issue you can either remove those checks entirely or just ignore it. Everything should keep working. 
 
 If you lose power/internet, and power returns while internet does not, the system will continually reboot as it will fail to set the time via NTP. I will correct this with some checks later, but I have not done so yet.
 
@@ -83,6 +83,6 @@ Credit and Thanks to Bhavesh Kakwani for this guide that I ended up with remnant
 
 Thanks to worldtimeapi.org and ipify.org and timeapi.io for having good (FREE!!!!) APIs that made this easier and more generally usable
 
-Thanks to everyone on the Raspbery Pi Forum that helped me troubleshoot a, probably self-imposed, issue with this whole thing <3
+Thanks to everyone on the Raspberry Pi Forum that helped me troubleshoot a, probably self-imposed, issue with this whole thing <3
 
-Thanks to a number of random forum posts from 2017 for assorted troubleshooting during the times where I was overcomplicating things instead of just doing it a non-stupid way :P 
+Thanks to a number of random forum posts from 2017 for assorted troubleshooting during the times where I was over-complicating things instead of just doing it a non-stupid way :P 
