@@ -44,7 +44,7 @@ Next, after sleeping for 1 second, the wireless chip will be disabled to conserv
 
 Next, the current actual local time will be calculated utilizing the UTC offset, time will be formatted, and the servos will be set to reflect the current time. This runs in a loop that will update the displays to match the time as it changes.
 
-Every hour of operation, the wireless chip will be re-enabled, it will connect to wifi, resync the RTC via NTP, and diable the wireless chip after it is done. This is to ensure the time is kept as accurate as possible, but it is not really neccessary.
+Every hour of operation, the wireless chip will be re-enabled, it will connect to wifi, resync the RTC via NTP, and disable the wireless chip after it is done. This is to ensure the time is kept as accurate as possible, but it is not really neccessary.
 
 # Things you can/should change (this is documented in code comments as well)
 I was pretty agressive with the sleep values between servo movements and checks - you could reduce these values without issue, but I do recommend leaving some time between movements to prevent overloading anything
