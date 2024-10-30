@@ -58,9 +58,16 @@ You SHOULD to change the pin values to match where you have your servos plugged 
 You MUST update the secrets.py file with your wifi name (ssid) and password. If you don't do this, you don't get wifi :( 
 
 # Known issues as of 30/10/2024
-Not sure why, but sometimes the code doesn't convert to 12 hour time properly and you end up with 24 hour time: such as 13:00 instead of 01:00 I have no idea why this happens as it only does it sometimes.
+Sometimes servos do not move as much as they are supposed to - higher degree value usually fixes this (bump it up by 1 or 2 degrees), but it can throw off the displays as they count up. Might make changes to this to let you set a specific degree value per display/servo to fine tune it. This should be prety easy to impliment, but overall it works well enough so I haven't bothered yet.
 
 Sometimes there is issues reconnecting the wifi during operation to resync the time - if you run into this issue you can either remove those checks entirely or just ignore it. Everything should keep working. 
+
+# Troubleshooting
+If you run into issues, I recommend tinkering with it to try to figure it out! (That's half the fun of the whole project!)
+
+If you have any particular bugs or improvements, please feel free to open an issue or pull request and I'll take a look.
+
+I will not troubleshoot hardware issue here - please consult other forums for hardware issues
 
 
 # Credit and Thanks
