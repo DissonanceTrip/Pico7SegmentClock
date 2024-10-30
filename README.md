@@ -12,7 +12,7 @@ Servo board (for power/easy hookup): https://www.waveshare.com/pico-servo-driver
 
 wire to connect the power supply to the waveshare board: whatever works
 
-some MG995 servos: I got some off amazon - https://www.amazon.com/Control-Angle180-Digital-Torque-Helicopter/dp/B07NQJ1VZ2
+some MG995 180degree servos: I got some off amazon - https://www.amazon.com/Control-Angle180-Digital-Torque-Helicopter/dp/B07NQJ1VZ2
 
 # Code
 The Pico W will need 2 files:
