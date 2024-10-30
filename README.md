@@ -22,7 +22,7 @@ The Pico W will need 2 files:
 # Extra files
 I have included a few extra files to make this whole process easier:
 1) degreetest.py - makes it easy to figure out how much the servos need to rotate for each number
-2) Explain.txt - this file has a lot of explaination for what everything does and how the code works
+2) Explain.txt - this file has a lot of extra details that you don't need
 
 # IMPORTANT NOTE:
 You will need to change variables in the main.py and secrets.py in order for this to work properly. It will NOT work if you just copy everything over and make no changes.
