@@ -69,7 +69,7 @@ If you run into issues, I recommend tinkering with it to try to figure it out! (
 
 If you have any particular bugs or improvements, please feel free to open an issue or pull request and I'll take a look.
 
-I will not troubleshoot hardware issue here - please consult other forums for hardware issues
+I will not troubleshoot hardware issues here - please consult other forums for hardware issues
 
 
 # Credit and Thanks
