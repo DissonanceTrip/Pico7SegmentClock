@@ -71,9 +71,9 @@ I will not troubleshoot hardware issue here - please consult other forums for ha
 
 
 # Credit and Thanks
-Credit and Thanks to Engineezy (linked above under hardware) for the models and build instructions. 10/10 I love your work <3
+Credit and Thanks to Engineezy https://engineezy.com/pages/about for the models and build instructions. 10/10 I love your work <3
 
-Credit and Thanks to redoxcode [https://github.com/redoxcode/micropython-servo] for the micropython-servo library for servo control. 10/10 made this super easy <3
+Credit and Thanks to redoxcode https://github.com/redoxcode/micropython-servo for the micropython-servo library for servo control. 10/10 made this super easy <3
 
 Credit to the Get Started Guide for the wlan_connect() method: https://projects.raspberrypi.org/en/projects/get-started-pico-w/2
 
