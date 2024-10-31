@@ -70,7 +70,6 @@ degrees = 20
 
 #define how to connect to the wifi using secrests file info - credit to example code: https://projects.raspberrypi.org/en/projects/get-started-pico-w/2
 def wlan_connect():
-    wlan = network.WLAN(network.STA_IF)
     wlan.active(True)
     wlan.connect(ssid, password)
     #wait for connect or fail
@@ -90,35 +89,34 @@ def wlan_connect():
         status = wlan.ifconfig()
         print('ip = ' + status[0])
         ip = status[0]
-        return ip
     
 #define how to disconnect from wifi to save power and not stress the system
 def wlan_disconnect():
-    print("disconnecting wifi")
+    print("Disconnecting wireless.")
     wlan.disconnect()
-    time.sleep(1)
-    while wlan.active():
-        print("disconnecting wifi - again")
-        wlan.disconnect()
-        time.sleep(1)
-    print("wireless disconnected")
+    wlan.active(False)
     wlan.deinit()
     time.sleep(1)
-    print("deinit wlan for full off")
-    while wlan.status() != 0:
-        print("deinit wlan again")
+    while wlan.active():
+        wlan.disconnect()
+        wlan.active(False)
         wlan.deinit()
         time.sleep(1)
-    print("wlan status is 0. Should be fully shut down")
+    while wlan.status() != 0:
+        wlan.disconnect()
+        wlan.active(False)
+        wlan.deinit()
+        time.sleep(1)
+    print("Wireless disabled.")
     
 # Set all servos to the 0 position.
 def setALLZERO():
     hoursTens.write(0)
-    time.sleep(0.5)
+    time.sleep(1)
     hoursOnes.write(0)
-    time.sleep(0.5)
+    time.sleep(1)
     minutesTens.write(0)
-    time.sleep(0.5)
+    time.sleep(1)
     minutesOnes.write(0)
 
 #set servos to display 1337 cause we are 1337 H@x0r2 :P
@@ -126,27 +124,23 @@ def setALLZERO():
 #If you want to change this to something other than 1337, just change the numbers before the "* degrees" part of each line.
 def setWlanSuccess():
     hoursTens.write(1 * degrees)
-    time.sleep(0.5)
+    time.sleep(1)
     hoursOnes.write(3 * degrees)
-    time.sleep(0.5)
+    time.sleep(1)
     minutesTens.write(3 * degrees)
-    time.sleep(0.5)
+    time.sleep(1)
     minutesOnes.write(7 * degrees)
     
 #Function to update time via network - get utc offset easy way and sync from ntp server
 def get_time_AIO():
     global UTC_OFFSET
-    print("running primary time sync")
-    response = requests.get("http://worldtimeapi.org/api/ip", timeout=5)
-    # Get response code
-    #response_code = response.status_code
-    # Get response content
+    print("Running primary time sync")
+    response = requests.get("http://worldtimeapi.org/api/ip", timeout=4)
     response_content = response.content
     #load data json format
     data = json.loads(response_content)
     #extract the utc_offset value
     currentoffset=data["utc_offset"]
-    print("offset: ",currentoffset)
     currentoffset = currentoffset.replace(":","").replace("0","")
     print("formatted offset: ",currentoffset)
     UTC_OFFSET = int(currentoffset) * 60 * 60
@@ -161,7 +155,6 @@ def get_time_backup():
     print("Running backup time sync")
     response = requests.get("https://api.ipify.org").text
     currentip=response
-    print("Public IP: ",currentip)
     url = "https://timeapi.io/api/timezone/ip?ipAddress={}".format(currentip)
     response = requests.get(url)
     #response_code = response.status_code
@@ -175,41 +168,18 @@ def get_time_backup():
     print("time is synced and offset is set")
     response.close()
 
-#Function to update time via network and reset if it fails more than 3 times. Not currently used due to power consumption concerns.
-def updateTimeNoFail():
-    error = 0
-    if error < 3:
-        try:
-            ntptime.settime()
-            print("Time updated successfully")
-        except:
-            time.sleep(2)
-            error += 1
-    else:
-        machine.reset()
-
-#Function to update time via network after initial time is set. This is not used due to power consumption concerns.
-def updateTime():
-    error = 0
-    if error < 3:
-        try:
-            ntptime.settime()
-            print("Time updated successfully")
-        except:
-            time.sleep(2)
-            error += 1
-    else:
-        print("Could not update time - will try again later")
-
 ###### THIS IS THE START OF ACTUAL FUNCTIONALITY
 #####
 ####
 ###
 ##
 # Start procedure - set all displays to zero, connect to WiFi, indicate success, update time via network, proceed to clock functionality
-print("START - sleep 1 second")
-time.sleep(1)
-print("connect to WiFi - sleep 1 second")
+print("START - sleep for 3 seconds")
+time.sleep(3)
+print("Set all displays to 0 then sleep for 4 seconds")
+setALLZERO()
+time.sleep(4)
+print("connect to WiFi - sleep for 1 second")
 wlan_connect()
 time.sleep(1)
 print("update time via network - reset if this fails")
@@ -221,12 +191,10 @@ except:
     except:
         machine.reset()
 wlan_disconnect()
-time.sleep(1)
+print("sleep 2 seconds")
+time.sleep(2)
 print("connection success - setWlanSuccess indicator then sleep for 2 seconds")
 setWlanSuccess()
-time.sleep(2)
-print("Set all displays to 0 then sleep for 2 seconds")
-setALLZERO()
 time.sleep(2)
 
 ###### Set some variables for use in the main loop
@@ -252,6 +220,9 @@ while True:
     year, month, day, hour, mins, secs, weekday, yearday = time.localtime(time.time() + UTC_OFFSET)
     #create some variables that will be used later - apply formatting
     currentHour ="{}".format(hour%12)
+    #correct error where currentHour will set "0" if the actual hour is 12
+    if currentHour == "0":
+        currentHour = "12"
     currentMinute = "{}".format(mins)
     #print the current time and resync value
     print("current time is: {}:{}".format(currentHour,currentMinute))
