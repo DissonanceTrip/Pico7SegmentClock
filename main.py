@@ -175,7 +175,7 @@ def get_time_backup():
     print("time is synced and offset is set")
     response.close()
 
-#Function to update time via network and reset if it fails more than 3 times. Not currently used but keeping it anyway.
+#Function to update time via network and reset if it fails more than 3 times. Not currently used due to power consumption concerns.
 def updateTimeNoFail():
     error = 0
     if error < 3:
@@ -188,7 +188,7 @@ def updateTimeNoFail():
     else:
         machine.reset()
 
-#Function to update time via network during operation - this does NOT reset upon failure since the Pico's RTC should keep time well enough.
+#Function to update time via network after initial time is set. This is not used due to power consumption concerns.
 def updateTime():
     error = 0
     if error < 3:
@@ -207,17 +207,11 @@ def updateTime():
 ###
 ##
 # Start procedure - set all displays to zero, connect to WiFi, indicate success, update time via network, proceed to clock functionality
-print("START - sleep 3 seconds")
-time.sleep(3)
-print("Set all displays to 0 then sleep for 3 seconds")
-setALLZERO()
-time.sleep(3)
-print("connect to WiFi")
+print("START - sleep 2 seconds")
+time.sleep(2)
+print("connect to WiFi - sleep 1 second")
 wlan_connect()
-time.sleep(2)
-print("connection success - setWlanSuccess indicator then sleep for 2 seconds")
-setWlanSuccess()
-time.sleep(2)
+time.sleep(1)
 print("update time via network - reset if this fails")
 try:
     get_time_AIO()
@@ -229,14 +223,19 @@ except:
 time.sleep(1)
 wlan_disconnect()
 time.sleep(1)
+print("connection success - setWlanSuccess indicator then sleep for 2 seconds")
+setWlanSuccess()
+time.sleep(2)
+print("Set all displays to 0 then sleep for 2 seconds")
+setALLZERO()
+time.sleep(2)
 
 ###### Set some variables for use in the main loop
 #####
 ####
 ###
 ##
-# resync value used as counter for re-syncing the time via network
-resync = 0
+
 #old time values for checking if the current value actually needs to be changed - this prevent the servos from making noise while not actually changing value.
 #example: if dispaly currently shows 0 - you do not need to re-write 0 to it again. 
 currentHourOld = 0
@@ -248,56 +247,43 @@ currentMinuteOld = 0
 ##
 #
 while True:
-    #if resync value  is less than or equal to 3,600 (60 minutes) then update the time like normal
-    if resync <= 3600:
-        #sleep for 1 second
-        time.sleep(1)
-        #do some definition for the time and apply the offset for selected timezone
-        year, month, day, hour, mins, secs, weekday, yearday = time.localtime(time.time() + UTC_OFFSET)
-        #create some variables that will be used later - apply formatting
-        currentHour ="{}".format(hour%12)
-        currentMinute = "{}".format(mins)
-        #print the current time and resync value
-        print("current time is: {}:{} and resync value is: {}".format(currentHour,currentMinute, resync))
-        
-        # TIME IS CHANGED AND DISPLAYS ARE UPDATED HERE
-        #Test if the hour has changed and only send changes if hour has changed
-        if currentHour == currentHourOld:
-            print("hour has not changed")
-        else:
-            #hour has changed - update the variable that tracks hour and update displays
-            currentHourOld = currentHour
-            if len(str(currentHour)) == 1:
-                hoursTens.write(0)
-                time.sleep(0.5)
-                hoursOnes.write(int(currentHour) * degrees)
-            else:
-                hoursTens.write(int(currentHour[0]) * degrees)
-                time.sleep(0.5)
-                hoursOnes.write(int(currentHour[1]) * degrees)
-                
-        #test if minute has changed and only send changes if minute has changed
-        time.sleep(0.5)
-        if currentMinute == currentMinuteOld:
-            print("minute has not changed")
-        else:
-            currentMinuteOld = currentMinute
-            if len(currentMinute) == 1:
-                minutesTens.write(0)
-                time.sleep(0.5)
-                minutesOnes.write(int(currentMinute) * degrees)
-            else:
-                minutesTens.write(int(currentMinute[0]) * degrees)
-                time.sleep(0.5)
-                minutesOnes.write(int(currentMinute[1]) * degrees)
-        #add one to resync counter
-        resync += 1
+    #sleep for 1 second
+    time.sleep(1)
+    #do some definition for the time and apply the offset for selected timezone
+    year, month, day, hour, mins, secs, weekday, yearday = time.localtime(time.time() + UTC_OFFSET)
+    #create some variables that will be used later - apply formatting
+    currentHour ="{}".format(hour%12)
+    currentMinute = "{}".format(mins)
+    #print the current time and resync value
+    print("current time is: {}:{}".format(currentHour,currentMinute))
+    
+    # TIME IS CHANGED AND DISPLAYS ARE UPDATED HERE
+    #Test if the hour has changed and only send changes if hour has changed
+    if currentHour == currentHourOld:
+        print("hour has not changed")
     else:
-        #when 60 minutes have passed this code will run - this will try to update the time via network and set resync back to 0
-        try:
-            wlan_connect()
-            updateTime()
-            wlan_disconnect()
-        except:
-            print("Time could not be updated. Will try again later.")
-        resync = 0
+        #hour has changed - update the variable that tracks hour and update displays
+        currentHourOld = currentHour
+        if len(str(currentHour)) == 1:
+            hoursTens.write(0)
+            time.sleep(0.5)
+            hoursOnes.write(int(currentHour) * degrees)
+        else:
+            hoursTens.write(int(currentHour[0]) * degrees)
+            time.sleep(0.5)
+            hoursOnes.write(int(currentHour[1]) * degrees)
+                
+    #test if minute has changed and only send changes if minute has changed
+    time.sleep(0.5)
+    if currentMinute == currentMinuteOld:
+        print("minute has not changed")
+    else:
+        currentMinuteOld = currentMinute
+        if len(currentMinute) == 1:
+            minutesTens.write(0)
+            time.sleep(0.5)
+            minutesOnes.write(int(currentMinute) * degrees)
+        else:
+            minutesTens.write(int(currentMinute[0]) * degrees)
+            time.sleep(0.5)
+            minutesOnes.write(int(currentMinute[1]) * degrees)
