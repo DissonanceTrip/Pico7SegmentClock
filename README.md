@@ -30,21 +30,21 @@ You will need to change variables in the main.py and secrets.py in order for thi
 # How it works in human readable format
 The code functions as described:
 
-Once connected to power, the Pico will sleep for 3 seconds.
+Once connected to power, the Pico will sleep for 2 seconds.
 
-Next, the Pico will set all the servo positions to 0 degrees which should correspond with the number 0 on each display. 
-
-Next, the Pico will connect to the WiFi network, as defined, then sleep for 2 seconds.
-
-Next, the Pico will set the servo positions to a defined number/pattern (default is 1337 because I'm funny) then sleep for 2 seconds. This indicates that wireless connection has succeeded.
+Next, the Pico will connect to the WiFi network, as defined, then sleep for 1 second.
 
 Next, utilizing the wireless connection, some API calls will be made to establish what UTC offset is needed for the current location then sync time from public NTP server. This has a primary and a backup function.
 
 Next, after sleeping for 1 second, the wireless chip will be disabled to conserve power (and avoid any issues with overdrawing the servo board), then sleep again for 1 second.
 
+Next, the Pico will set the servo positions to a defined number/pattern (default is 1337 because I'm funny) then sleep for 2 seconds. This indicates that wireless connection has succeeded.
+
+
+Next, the Pico will set all the servo positions to 0 degrees which should correspond with the number 0 on each display. Sleep for 2 seconds.
+
 Next, the current actual local time will be calculated utilizing the UTC offset, time will be formatted, and the servos will be set to reflect the current time. This runs in a loop that will update the displays to match the time as it changes.
 
-Every hour of operation, the wireless chip will be re-enabled, it will connect to WiFi, resync the RTC via NTP, and disable the wireless chip after it is done. This is to ensure the time is kept as accurate as possible, but it is not really necessary.
 
 # Things you can/should change (this is documented in code comments as well)
 I was pretty aggressive with the sleep values between servo movements and checks - you could reduce these values without issue, but I do recommend leaving some time between movements to prevent overloading anything
@@ -59,8 +59,6 @@ You MUST update the secrets.py file with your WiFi name (ssid) and password. If 
 
 # Known issues as of 30/10/2024
 Sometimes servos do not move as much as they are supposed to - higher degree value usually fixes this (bump it up by 1 or 2 degrees), but it can throw off the displays as they count up. Might make changes to this to let you set a specific degree value per display/servo to fine tune it. This should be pretty easy to implement, but overall it works well enough so I haven't bothered yet.
-
-Sometimes there is issues reconnecting the WiFi, during operation, to resync the time - if you run into this issue you can either remove those checks entirely or just ignore it. Everything should keep working. 
 
 If you lose power/internet, and power returns while internet does not, the system will continually reboot as it will fail to set the time via NTP. I will correct this with some checks later, but I have not done so yet.
 
