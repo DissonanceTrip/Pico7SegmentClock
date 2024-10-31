@@ -207,8 +207,8 @@ def updateTime():
 ###
 ##
 # Start procedure - set all displays to zero, connect to WiFi, indicate success, update time via network, proceed to clock functionality
-print("START - sleep 2 seconds")
-time.sleep(2)
+print("START - sleep 1 second")
+time.sleep(1)
 print("connect to WiFi - sleep 1 second")
 wlan_connect()
 time.sleep(1)
@@ -220,7 +220,6 @@ except:
         get_time_backup()
     except:
         machine.reset()
-time.sleep(1)
 wlan_disconnect()
 time.sleep(1)
 print("connection success - setWlanSuccess indicator then sleep for 2 seconds")
