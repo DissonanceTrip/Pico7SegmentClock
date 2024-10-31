@@ -37,17 +37,17 @@ You will need to change variables in the main.py and secrets.py in order for thi
 # How it works in human readable format
 The code functions as described:
 
-Once connected to power, the Pico will sleep for 1 second.
+Once connected to power, the Pico will sleep for 3 seconds.
+
+Next, the Pico will set all the servo positions to 0 degrees which should correspond with the number 0 on each display. Sleep for 4 seconds.
 
 Next, the Pico will connect to the WiFi network, as defined, then sleep for 1 second.
 
 Next, utilizing the wireless connection, some API calls will be made to establish what UTC offset is needed for the current location then sync time from public NTP server. This has a primary and a backup function.
 
-Next, the wireless chip will be disabled to conserve power (and avoid any issues with overdrawing the servo board), then sleep again for 1 second.
+Next, the wireless chip will be disabled to conserve power (and avoid any issues with overdrawing the servo board), then sleep again for 2 seconds.
 
 Next, the Pico will set the servo positions to a defined number/pattern (default is 1337 because I'm funny) then sleep for 2 seconds. This indicates that wireless connection has succeeded.
-
-Next, the Pico will set all the servo positions to 0 degrees which should correspond with the number 0 on each display. Sleep for 2 seconds.
 
 Next, the current actual local time will be calculated utilizing the UTC offset, time will be formatted, and the servos will be set to reflect the current time. This runs in a loop that will update the displays to match the time as it changes.
 
@@ -63,10 +63,8 @@ You SHOULD to change the pin values to match where you have your servos plugged 
 
 You MUST update the secrets.py file with your WiFi name (ssid) and password. If you don't do this, you don't get WiFi :( 
 
-# Known issues as of 30/10/2024
-When hour is 12 - displays will set "00" instead. This is stupid easy to fix, just never noticed it during testing. This will be resolved later today (31/10/2024)
-
-Sometimes servos do not move as much as they are supposed to - higher degree value usually fixes this (bump it up by 1 or 2 degrees), but it can throw off the displays as they count up. Might make changes to this to let you set a specific degree value per display/servo to fine tune it. This should be pretty easy to implement, but overall it works well enough so I haven't bothered yet.
+# Known issues as of 31/10/2024
+Setting a single static value for the rotation of ALL the servos sometimes doesn't work perfectly. Some displays may move more/less than others. This is primarily an issue of the physical properties of the displays. I plan to revise the code, and include it as a alternative version, to allow you to set individual degree values for each servo to compensate for this. This will be released later - in the meantime, the current method works well enough in most cases if your prints are consistent! Be sure to use the degreetest.py code to find what works best for you!
 
 
 # Troubleshooting
