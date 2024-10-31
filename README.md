@@ -14,6 +14,13 @@ wire to connect the power supply to the Waveshare board: whatever works
 
 some MG995 180degree servos: I got some off amazon - https://www.amazon.com/Control-Angle180-Digital-Torque-Helicopter/dp/B07NQJ1VZ2
 
+# Disclaimer
+Many of these Pico servo boards are not intended for use with a Pico W as the wireless chip draws additional power. Running the servos while the wireless chip is active can cause damage to the Pico W.
+
+This code is adjusted to only have the wireless chip active during the initial few seconds that the system is powered up. This SHOULD be fine, but I accept no responsibility if your Pico W gets fried or burns down your house.
+
+I've been running this code for long periods of time with no issues - your experience may vary. Use at your own risk.
+
 # Code
 The Pico W will need 2 files:
 1) main.py - this does the majority of the work
