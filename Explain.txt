@@ -32,12 +32,12 @@ Most of this info is written in code comments. But if you want to read more deta
 	Second get UTC offset via timeapi.io
 	sync time via ntptime
 
-*def updateTimeNoFail()
-	unused method. try to sync time via ntp and reset machine if it fails
+*def updateTimeNoFail() - THIS SHOULD NOT BE USED DURING OPERATION.
+	unused method. try to sync time via ntp and reset machine if it fails - THIS SHOULD NOT BE USED DURING OPERATION.
 
-*def updateTime()
-	essentially the same as updateTimeNoFail() but does not reset machine upon failure.
-	This is used to resync ntp during operation
+*def updateTime() - THIS SHOULD NOT BE USED DURING OPERATION.
+	essentially the same as updateTimeNoFail() but does not reset machine upon failure. - THIS SHOULD NOT BE USED DURING OPERATION.
+	This is used to resync ntp during operation - THIS SHOULD NOT BE USED DURING OPERATION.
 
 *time formatting explained
 	year, month, day, hour, mins, secs, weekday, yearday = time.localtime(time.time() + UTC_OFFSET)
