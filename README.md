@@ -8,11 +8,11 @@ Raspberry Pi Pico W: https://www.raspberrypi.com/products/raspberry-pi-pico/?var
 
 Servo board (for power/easy hookup): https://www.waveshare.com/pico-servo-driver.htm
 
-You can use a different board (like one from Kitronik), assemble your own board, or directly wire everything together! The servo control code can work with all methods.
+You can use a different board or wire it up yourself - The servo control code can work with all methods!
+
+Wire to connect the power supply to the servo board (if needed)
 
 12v 5a power supply: get one from pretty much anywhere
-
-wire to connect the power supply to the Waveshare board: whatever works
 
 some MG995 180degree servos: I got some off amazon - https://www.amazon.com/Control-Angle180-Digital-Torque-Helicopter/dp/B07NQJ1VZ2
 
