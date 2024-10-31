@@ -30,16 +30,15 @@ You will need to change variables in the main.py and secrets.py in order for thi
 # How it works in human readable format
 The code functions as described:
 
-Once connected to power, the Pico will sleep for 2 seconds.
+Once connected to power, the Pico will sleep for 1 second.
 
 Next, the Pico will connect to the WiFi network, as defined, then sleep for 1 second.
 
 Next, utilizing the wireless connection, some API calls will be made to establish what UTC offset is needed for the current location then sync time from public NTP server. This has a primary and a backup function.
 
-Next, after sleeping for 1 second, the wireless chip will be disabled to conserve power (and avoid any issues with overdrawing the servo board), then sleep again for 1 second.
+Next, the wireless chip will be disabled to conserve power (and avoid any issues with overdrawing the servo board), then sleep again for 1 second.
 
 Next, the Pico will set the servo positions to a defined number/pattern (default is 1337 because I'm funny) then sleep for 2 seconds. This indicates that wireless connection has succeeded.
-
 
 Next, the Pico will set all the servo positions to 0 degrees which should correspond with the number 0 on each display. Sleep for 2 seconds.
 
